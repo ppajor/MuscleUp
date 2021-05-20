@@ -12,7 +12,6 @@ import firebase from "firebase";
 import LogoText from "../../components/LogoText";
 import Screen from "../../components/Screen";
 
-
 export default function LoginPage(props) {
   const [inputUsername, setInputUsername] = useState("");
   const [inputPassword, setInputPassword] = useState("");
@@ -46,35 +45,35 @@ export default function LoginPage(props) {
   };
 
   return (
-      <Screen>
-    <View style={styles.container}>
-      <Image
-        width="50"
-        style={styles.logo}
-        source={require("../../assets/login-logo.png")}
-      ></Image>
+    <Screen>
+      <View style={styles.container}>
+        <Image
+          width="50"
+          style={styles.logo}
+          source={require("../../assets/login-logo.png")}
+        ></Image>
 
-        <LogoText/>
-      <TextInput
-        style={[styles.input, styles.margin]}
-        placeholder="Username"
-        onChangeText={(text) => setInputUsername(text)}
-        value={inputUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        onChangeText={(text) => setInputPassword(text)}
-        value={inputPassword}
-      />
-      <TouchableOpacity
-        style={styles.loginButton}
-        color="dodgerblue"
-        onPress={handleLogin}
-      >
-        <Text style={styles.loginButtonText}>Log in</Text>
-      </TouchableOpacity>
-    </View>
+        <LogoText />
+        <TextInput
+          style={[styles.input, styles.margin]}
+          placeholder="Username"
+          onChangeText={(text) => setInputUsername(text)}
+          value={inputUsername}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          onChangeText={(text) => setInputPassword(text)}
+          value={inputPassword}
+        />
+        <TouchableOpacity
+          style={styles.loginButton}
+          color="dodgerblue"
+          onPress={handleLogin}
+        >
+          <Text style={styles.loginButtonText}>Log in</Text>
+        </TouchableOpacity>
+      </View>
     </Screen>
   );
 }
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: "100%",
-    marginTop:50,
+    marginTop: 50,
     backgroundColor: "#fff",
   },
   margin: {
