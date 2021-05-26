@@ -1,24 +1,15 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
 
 export default function Screen(props) {
-  return (
-    <View style={styles.container}>
-    {props.children}
-    </View>
-  );
+  return <View style={styles.container}>{props.children}</View>;
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        marginTop: Constants.statusBarHeight,
-      },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    marginTop: Constants.statusBarHeight,
+  },
 });
-
-

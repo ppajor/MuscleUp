@@ -119,7 +119,8 @@ function AddPlan(props) {
     );
   };
 
-  const renderExercisePicker = () => {
+  const renderExercisePicker = (exId) => {
+    console.log("EXID:" + exId);
     return (
       <View style={styles.addCatEx}>
         <TouchableWithoutFeedback
@@ -133,14 +134,14 @@ function AddPlan(props) {
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => setModalExerciseVisible(true)}>
           <Text style={{ color: "#fff", fontSize: 18 }}>
-            {trainingData.exercises.ex_id.exercise_name}
+            {trainingData.exercises[exId].exercise_name}
           </Text>
         </TouchableWithoutFeedback>
       </View>
     );
   };
 
-  const renderCategoryModal = () => {
+  const renderCategoryModal = (exId) => {
     return (
       <Modal visible={modalVisible} animationType="slide">
         <Button title="Close" onPress={() => setModalVisible(false)} />
@@ -169,7 +170,7 @@ function AddPlan(props) {
     );
   };
 
-  const renderExerciseModal = () => {
+  const renderExerciseModal = (exId) => {
     return (
       <Modal visible={modalExerciseVisible} animationType="slide">
         <Button title="Close" onPress={() => setModalExerciseVisible(false)} />
@@ -184,7 +185,7 @@ function AddPlan(props) {
                   key={item.key}
                   handleExercise={(ex) => {
                     let state = { ...trainingData };
-                    state.exercises.ex_id.exercise_name = ex;
+                    state.exercises[exId].exercise_name = ex;
                     console.log(ex);
                     setTrainingData(state);
                     setModalExerciseVisible(false);
@@ -197,14 +198,14 @@ function AddPlan(props) {
     );
   };
 
-  const renderSeriesButton = () => {
+  const renderSeriesButton = (exId) => {
     return (
       <TouchableHighlight
         style={styles.addSeriesBtn}
         onPress={() => {
           let state = { ...trainingData };
           const id = Math.random().toString(36).substr(2, 9); //tworzenie id
-          state.exercises.ex_id.series[id] = { kg: 0, repeat: 0 }; //dodawanie serii
+          state.exercises[exId].series[id] = { kg: 0, repeat: 0 }; //dodawanie serii
           setTrainingData(state);
         }}
       >
@@ -218,69 +219,97 @@ function AddPlan(props) {
     );
   };
 
+  const renderAddExerciseButton = () => {
+    return (
+      <TouchableHighlight
+        style={styles.addSeriesBtn}
+        onPress={() => {
+          let state = { ...trainingData };
+          const id = Math.random().toString(36).substr(2, 9); //tworzenie id
+          state.exercises[id] = {
+            id: id,
+            exercise_name: "Wybierz ćwiczenie",
+            series: {},
+          }; //dodawanie serii
+          setTrainingData(state);
+        }}
+      >
+        <>
+          <View style={styles.addSeriesIcon}>
+            <Ionicons name="add" size={24} color="black" />
+          </View>
+          <Text>Dodaj cwiczenie</Text>
+        </>
+      </TouchableHighlight>
+    );
+  };
+
   return (
     <Screen>
       <View style={styles.mainContainer}>
         {renderTrainingName()}
-        <FlatList
-          data={Object.values(training.exercises)}
-          keyExtractor={(el) => el.id}
-          renderItem={({ item, idx }) => (
-            <>
-              {renderExercisePicker()}
-              {console.log(trainingData.exercises[item.id].series)}
-              <View style={styles.seriesContainer}>
-                {Object.values(trainingData.exercises.ex_id.series).map(
-                  (ex, idx) => {
-                    //console.log(ex.kg);
-                    // console.log(Object.keys(ex));
-                    return (
-                      <View
-                        key={idx}
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                        }}
-                      >
-                        <TextInput
-                          onChangeText={(el) => {
-                            let state = { ...trainingData };
-                            let key = Object.keys(state.exercises.ex_id.series)[
-                              idx
-                            ];
-                            state.exercises.ex_id.series[key].kg = el;
+        <View style={{ maxHeight: "65%" }}>
+          <FlatList
+            ListHeaderComponentStyle={styles.flatlist}
+            data={Object.values(training.exercises)}
+            keyExtractor={(el) => el.id}
+            renderItem={({ item }) => (
+              <View style={{ paddingVertical: 16 }}>
+                {renderExercisePicker(item.id)}
 
-                            setTrainingData(state);
+                <View style={styles.seriesContainer}>
+                  {Object.values(trainingData.exercises[item.id].series).map(
+                    (ex, idx) => {
+                      //console.log(ex.kg);
+                      // console.log(Object.keys(ex));
+                      return (
+                        <View
+                          key={idx}
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
                           }}
-                          value={ex.kg.toString()}
-                        />
-                        <Text>kg</Text>
-                        <TextInput
-                          onChangeText={(el) => {
-                            let state = { ...trainingData };
-                            let key = Object.keys(state.exercises.ex_id.series)[
-                              idx
-                            ];
-                            state.exercises.ex_id.series[key].repeat = el;
+                        >
+                          <TextInput
+                            onChangeText={(el) => {
+                              let state = { ...trainingData };
+                              let key = Object.keys(
+                                state.exercises[item.id].series
+                              )[idx];
+                              state.exercises[item.id].series[key].kg = el;
 
-                            setTrainingData(state);
-                          }}
-                          value={ex.repeat.toString()}
-                        />
-                        <Text>powtorzen</Text>
-                      </View>
-                    );
-                  }
-                )}
-                {renderSeriesButton()}
+                              setTrainingData(state);
+                            }}
+                            value={ex.kg.toString()}
+                          />
+                          <Text>kg</Text>
+                          <TextInput
+                            onChangeText={(el) => {
+                              let state = { ...trainingData };
+                              let key = Object.keys(
+                                state.exercises[item.id].series
+                              )[idx];
+                              state.exercises[item.id].series[key].repeat = el;
+
+                              setTrainingData(state);
+                            }}
+                            value={ex.repeat.toString()}
+                          />
+                          <Text>powtorzen</Text>
+                        </View>
+                      );
+                    }
+                  )}
+                  {renderSeriesButton(item.id)}
+                </View>
+
+                {renderCategoryModal(item.id)}
+                {renderExerciseModal(item.id)}
               </View>
-
-              {renderCategoryModal()}
-              {renderExerciseModal()}
-            </>
-          )}
-        />
-
+            )}
+          />
+        </View>
+        {renderAddExerciseButton()}
         <TouchableOpacity style={styles.loginButton}>
           <Text style={styles.loginButtonText}>Zapisz trening</Text>
         </TouchableOpacity>
@@ -399,6 +428,9 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: "#fff",
+  },
+  flatlist: {
+    backgroundColor: "red",
   },
 });
 
