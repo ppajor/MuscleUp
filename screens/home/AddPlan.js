@@ -18,6 +18,8 @@ import Screen from "../../components/Screen";
 import ChooseCategory from "../../components/ChooseCategory";
 import ChooseExercise from "../../components/ChooseExercise";
 
+import firebase from "firebase";
+
 const categories = [
   {
     name: "nogi",
@@ -58,7 +60,7 @@ const categories = [
   {
     name: "brzuch",
     key: "kjndsjkfnsdkjsd",
-    icon: require("../../assets/chest.png"),
+    icon: require("../../assets/leg.png"),
     exercises: ["a", "b", "c"],
   },
 ];
@@ -67,11 +69,13 @@ const training = {
   exercises: {
     ex_id: {
       id: "ex_id",
+      category: "nogi",
+      icon: require("../../assets/chest.png"),
       exercise_name: "Wybierz ćwiczenie",
       series: {
         series_id: {
           id: "series_id",
-          kg: 1,
+          kg: 0,
           repeat: 0,
         },
       },
@@ -122,21 +126,20 @@ function AddPlan(props) {
   };
 
   const renderExercisePicker = (exId) => {
-    console.log("EXID:" + exId);
-    console.log(modalVisible);
-
     return (
       <View style={styles.addCatEx}>
         <TouchableWithoutFeedback
           style={styles.categoryContainer}
           onPress={() => {
-            console.log(modalVisible);
             setModalVisible((prev) => ({ ...prev, [exId]: true }));
           }}
         >
           <View style={styles.addEx}>
-            <Image style={styles.categoryImg} source={icon} />
-            <Text>{category}</Text>
+            <Image
+              style={styles.categoryImg}
+              source={trainingData.exercises[exId].icon}
+            />
+            <Text>{trainingData.exercises[exId].category}</Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
@@ -174,8 +177,10 @@ function AddPlan(props) {
                 key={item.key}
                 icon={item.icon}
                 onPress={() => {
-                  setCategory(item.name);
-                  setIcon(item.icon);
+                  let state = { ...trainingData };
+                  state.exercises[exId].category = item.name;
+                  state.exercises[exId].icon = item.icon;
+                  setTrainingData(state);
                   setModalVisible((prev) => ({ ...prev, [exId]: false }));
                 }}
               />
@@ -199,7 +204,7 @@ function AddPlan(props) {
           data={categories}
           keyExtractor={(item) => item.name}
           renderItem={({ item }) => {
-            if (item.name == category)
+            if (item.name == trainingData.exercises[exId].category)
               return (
                 <ChooseExercise
                   exercises={item.exercises}
@@ -253,6 +258,8 @@ function AddPlan(props) {
           state.exercises[id] = {
             id: id,
             exercise_name: "Wybierz ćwiczenie",
+            category: "nogi",
+            icon: require("../../assets/leg.png"),
             series: {},
           }; //dodawanie serii
           setTrainingData(state);
@@ -268,6 +275,23 @@ function AddPlan(props) {
         </>
       </TouchableHighlight>
     );
+  };
+
+  const handleSaveTraining = () => {
+    const id = Math.random().toString(36).substr(2, 9); //tworzenie id
+    console.log("PRESSED");
+    firebase
+      .database()
+      .ref("/users/" + firebase.auth().currentUser.uid + "/trainings")
+      .update({
+        [id]: { ...trainingData },
+      })
+      .then(() => {
+        console.log("Data updated.");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -336,7 +360,10 @@ function AddPlan(props) {
           />
         </View>
         {renderAddExerciseButton()}
-        <TouchableOpacity style={styles.loginButton}>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => handleSaveTraining()}
+        >
           <Text style={styles.loginButtonText}>Zapisz trening</Text>
         </TouchableOpacity>
       </View>

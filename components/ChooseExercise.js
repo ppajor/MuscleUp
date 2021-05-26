@@ -13,10 +13,10 @@ function ChooseCategory({ handleExercise, exercises, keyprop }) {
   return (
     <View style={styles.container}>
       {exercises.map((ex) => {
-        let licznik = 1;
+        const id = Math.random().toString(36).substr(2, 9); //tworzenie id
         return (
           <TouchableHighlight
-            key={++licznik}
+            key={id}
             onPress={() => handleExercise(ex)}
             style={{ marginTop: "10%" }}
           >
