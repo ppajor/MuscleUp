@@ -81,8 +81,10 @@ const training = {
 };
 
 function AddPlan(props) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalExerciseVisible, setModalExerciseVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState({ ex_id: false });
+  const [modalExerciseVisible, setModalExerciseVisible] = useState({
+    ex_id: false,
+  });
   const [category, setCategory] = useState("klatka");
   const [exercise, setExercise] = useState("Wybierz ćwiczenie");
   const [series, setSeries] = useState([{ kg: 0, repeats: 0 }]);
@@ -121,18 +123,27 @@ function AddPlan(props) {
 
   const renderExercisePicker = (exId) => {
     console.log("EXID:" + exId);
+    console.log(modalVisible);
+
     return (
       <View style={styles.addCatEx}>
         <TouchableWithoutFeedback
           style={styles.categoryContainer}
-          onPress={() => setModalVisible(true)}
+          onPress={() => {
+            console.log(modalVisible);
+            setModalVisible((prev) => ({ ...prev, [exId]: true }));
+          }}
         >
           <View style={styles.addEx}>
             <Image style={styles.categoryImg} source={icon} />
             <Text>{category}</Text>
           </View>
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback onPress={() => setModalExerciseVisible(true)}>
+        <TouchableWithoutFeedback
+          onPress={() =>
+            setModalExerciseVisible((prev) => ({ ...prev, [exId]: true }))
+          }
+        >
           <Text style={{ color: "#fff", fontSize: 18 }}>
             {trainingData.exercises[exId].exercise_name}
           </Text>
@@ -143,8 +154,13 @@ function AddPlan(props) {
 
   const renderCategoryModal = (exId) => {
     return (
-      <Modal visible={modalVisible} animationType="slide">
-        <Button title="Close" onPress={() => setModalVisible(false)} />
+      <Modal visible={modalVisible[exId]} animationType="slide">
+        <Button
+          title="Close"
+          onPress={() =>
+            setModalVisible((prev) => ({ ...prev, [exId]: false }))
+          }
+        />
         <FlatList
           contentContainerStyle={styles.list}
           columnWrapperStyle={{ justifyContent: "space-around" }}
@@ -160,7 +176,7 @@ function AddPlan(props) {
                 onPress={() => {
                   setCategory(item.name);
                   setIcon(item.icon);
-                  setModalVisible(false);
+                  setModalVisible((prev) => ({ ...prev, [exId]: false }));
                 }}
               />
             );
@@ -172,8 +188,13 @@ function AddPlan(props) {
 
   const renderExerciseModal = (exId) => {
     return (
-      <Modal visible={modalExerciseVisible} animationType="slide">
-        <Button title="Close" onPress={() => setModalExerciseVisible(false)} />
+      <Modal visible={modalExerciseVisible[exId]} animationType="slide">
+        <Button
+          title="Close"
+          onPress={() =>
+            setModalExerciseVisible((prev) => ({ ...prev, [exId]: false }))
+          }
+        />
         <FlatList
           data={categories}
           keyExtractor={(item) => item.name}
@@ -188,7 +209,10 @@ function AddPlan(props) {
                     state.exercises[exId].exercise_name = ex;
                     console.log(ex);
                     setTrainingData(state);
-                    setModalExerciseVisible(false);
+                    setModalExerciseVisible((prev) => ({
+                      ...prev,
+                      [exId]: false,
+                    }));
                   }}
                 />
               );
@@ -232,6 +256,8 @@ function AddPlan(props) {
             series: {},
           }; //dodawanie serii
           setTrainingData(state);
+          setModalVisible((prev) => ({ ...prev, [id]: false }));
+          setModalExerciseVisible((prev) => ({ ...prev, [id]: false }));
         }}
       >
         <>
