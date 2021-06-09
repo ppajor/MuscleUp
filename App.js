@@ -13,6 +13,8 @@ import HomeScreen from "./screens/home/HomeScreen";
 import AddPlan from "./screens/home/AddPlan";
 import ChoosePlan from "./screens/home/ChoosePlan";
 import StartTraining from "./screens/home/StartTraining";
+import ProfileScreen from "./screens/profile/ProfileScreen";
+import Navbar from "./components/Navbar";
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
 
@@ -27,7 +29,12 @@ export default function App() {
         <Route exact path="/AddPlan" component={AddPlan} />
         <Route exact path="/ChoosePlan" component={ChoosePlan} />
         <Route exact path="/StartTraining" component={StartTraining} />
+
+        <Route exact path="/ProfileScreen" component={ProfileScreen} />
       </Switch>
     </MemoryRouter>
   );
 }
+
+// comments
+// import jsconfig.json for automatic componnet import

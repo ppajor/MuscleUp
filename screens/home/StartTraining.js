@@ -36,12 +36,12 @@ function StartTraining(props) {
   useEffect(() => {
     firebase
       .database()
-      .ref("/users/" + firebase.auth().currentUser.uid + "/trainings")
+      .ref("/users/" + firebase.auth().currentUser.uid)
       .once("value")
       .then((snapshot) => {
         let data = snapshot.val(); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
-        // console.log(data);
-        setData(data);
+        //console.log(data.trainings[data.selectedTraining]);
+        setData(data.trainings);
         setSelectedPlan(data.selectedTraining);
         setLoaded(true);
 
@@ -52,7 +52,7 @@ function StartTraining(props) {
             lastTraining: data.selectedTraining,
           })
           .then(() => {
-            console.log("Data updated.");
+            console.log("Ostatni trening dodany do bazy .");
           })
           .catch((error) => {
             console.error(error);
@@ -62,6 +62,33 @@ function StartTraining(props) {
         console.error(error);
       });
   }, []);
+
+  const handleEndTraining = (time) => {
+    let state = { ...data };
+    let today = new Date().toLocaleDateString();
+
+    state[selectedPlan].endData = today;
+    state[selectedPlan].trainingTime = time;
+    state[selectedPlan].training_id = selectedPlan;
+    const id = Math.random().toString(36).substr(2, 9); //tworzenie id
+    state[selectedPlan].result_id = id;
+    // let result = {};
+    //  result[selectedPlan] = state[selectedPlan];
+    //console.log(result);
+
+    firebase
+      .database()
+      .ref("/users/" + firebase.auth().currentUser.uid + "/results/")
+      .update({
+        [id]: state[selectedPlan],
+      })
+      .then(() => {
+        console.log("Wyniki dodane do bazy.");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   let screenWidth = Dimensions.get("window").width;
   let screenHeight = Dimensions.get("window").height;
@@ -76,9 +103,23 @@ function StartTraining(props) {
               showsHorizontalScrollIndicator={false}
             >
               {Object.values(data[selectedPlan].exercises).map((el) => {
-                console.log(el);
+                // console.log(el);
+                return (
+                  <TrainingExercise
+                    key={el.id}
+                    id={el.id}
+                    exercise={el}
+                    endTraining={(time) => handleEndTraining(time)}
+                    isExerciseDone={() => {
+                      let state = { ...data };
+                      let done = el.isDone;
+                      state[selectedPlan].exercises[el.id].isDone = !done;
 
-                return <TrainingExercise key={el.id} exercise={el} />;
+                      //  console.log(el);
+                      setData(state);
+                    }}
+                  />
+                );
               })}
             </ScrollView>
           </View>

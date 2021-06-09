@@ -1,76 +1,123 @@
-import React, { useState, useEffect } from 'react'
-import {Text, StyleSheet,BackHandler, FlatList } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Text,
+  StyleSheet,
+  BackHandler,
+  FlatList,
+  TouchableHighlight,
+  TouchableOpacity,
+  Image,
+  View,
+} from "react-native";
 import Screen from "../../components/Screen";
 import firebase from "firebase";
-import Exercise from '../../components/Exercise';
+import Plans from "../../components/Plans";
 
 function ChoosePlan(props) {
-    const [trainings, setTrainings] = useState({});
-    const [loaded, setLoaded] = useState(false);
+  const [trainings, setTrainings] = useState({});
+  const [loaded, setLoaded] = useState(false);
+  //const [highlight, setHighlight] = useState(false);
+  const [selected, setSelected] = useState("");
 
+  useEffect(() => {
+    const backAction = () => {
+      props.history.push("/HomeScreen"); //wracamy do glownej
+      return true; //musimy zreturnowac true -> patrz dokumentacja
+    };
 
-    useEffect(() => {
-        const backAction = () => {
-          props.history.push("/HomeScreen"); //wracamy do glownej
-          return true; //musimy zreturnowac true -> patrz dokumentacja
-        };
-    
-        const backHandler = BackHandler.addEventListener(
-          //obsluga hardwarowego back buttona (tylko android)
-          "hardwareBackPress",
-          backAction
-        );
-    
-        return () => backHandler.remove(); // przy odmontowywaniu
-      }, []);
+    const backHandler = BackHandler.addEventListener(
+      //obsluga hardwarowego back buttona (tylko android)
+      "hardwareBackPress",
+      backAction
+    );
 
-    useEffect(()=>{
-        console.log(firebase.auth().currentUser.uid);
+    return () => backHandler.remove(); // przy odmontowywaniu
+  }, []);
 
-        firebase
-        .database()
-        .ref("/users/" + firebase.auth().currentUser.uid +"/trainings")
-        .once("value")
-        .then((snapshot) => {
-            let data = snapshot.val(); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
-           // console.log(snapshot)
-            setTrainings(data);
-            setLoaded(true);
+  useEffect(() => {
+    console.log(firebase.auth().currentUser.uid);
 
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-    },[]);
+    firebase
+      .database()
+      .ref("/users/" + firebase.auth().currentUser.uid + "/trainings")
+      .once("value")
+      .then((snapshot) => {
+        let data = snapshot.val(); // co zrobic gdy uzytkownik nie ma nic w czytanych i jest null??
+        //console.log(data);
+        setTrainings(data);
+        setLoaded(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
-    return (
-        <>
-        {loaded && (
+  const handlePickTraining = () => {
+    firebase
+      .database()
+      .ref("/users/" + firebase.auth().currentUser.uid)
+      .update({
+        selectedTraining: selected,
+      })
+      .then(() => {
+        console.log("Data updated.");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  return (
+    <>
+      {loaded && (
         <Screen>
-            <Text style={styles.heading}>{trainings.training_id.training_name}</Text>
+          <View style={{ padding: "5%", height: "85%" }}>
             <FlatList
-            data={Object.values(trainings.training_id.exercises)}
-            keyExtractor={ex=>ex.id}
-            renderItem={({item})=>
-            (
-                <Exercise
-                name={item.exercise_name}
-                series={item.series}
+              data={Object.keys(trainings)}
+              keyExtractor={(ex) => ex}
+              renderItem={({ item }) => (
+                <Plans
+                  data={trainings[item]}
+                  id={item}
+                  onPress={() => {
+                    console.log("wbilem");
+                    setSelected(item);
+                  }}
                 />
-            )}
+              )}
             />
-           
+          </View>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => handlePickTraining()}
+          >
+            <Text style={styles.loginButtonText}>Zapisz trening</Text>
+          </TouchableOpacity>
         </Screen>
-        )}
-        </>
-        
-    )
+      )}
+    </>
+  );
 }
 
-export default ChoosePlan
+export default ChoosePlan;
 
 const styles = StyleSheet.create({
-    heading:{
-        fontSize:36,
-    }
-})
+  heading: {
+    fontSize: 36,
+  },
+  saveButton: {
+    position: "absolute",
+    bottom: "5%",
+    left: "12.5%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "75%",
+    height: "6%",
+    backgroundColor: "#A062C7",
+    borderRadius: 24,
+  },
+  loginButtonText: {
+    color: "#fff",
+  },
+});

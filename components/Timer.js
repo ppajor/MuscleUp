@@ -33,6 +33,7 @@ const Timer = (props) => {
   const endReading = () => {
     setTimerOn(false);
     setModalVisible(true);
+    props.endTraining(showTime());
   };
 
   return (
@@ -45,7 +46,6 @@ const Timer = (props) => {
           width: "100%",
           justifyContent: "space-around",
           marginBottom: "15%",
-          marginTop: "5%",
         }}
       >
         <TouchableHighlight onPress={() => setTime(0)}>

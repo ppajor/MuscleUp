@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   Text,
   BackHandler,
+  KeyboardAvoidingView,
 } from "react-native";
 import firebase from "firebase";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import LogoText from "../../components/LogoText";
 import Screen from "../../components/Screen";
@@ -44,7 +46,7 @@ export default function LoginPage(props) {
           .set({
             text: `hey ${result.user.uid}`,
             name: inputEmail,
-            trainings:"",
+            trainings: "",
           })
           .then(() => console.log("User account created & signed in!"));
       })
@@ -65,35 +67,35 @@ export default function LoginPage(props) {
 
   return (
       <Screen>
-    <View style={styles.container}>
-      <Image
-        width="50"
-        style={styles.logo}
-        source={require("../../assets/login-logo.png")}
-      ></Image>
-    <LogoText/>
-      <TextInput
-        style={[styles.input, styles.margin]}
-        placeholder="E-mail"
-        value={inputEmail}
-        onChangeText={(text) => setInputEmail(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={inputPassword}
-        onChangeText={(text) => setInputPassword(text)}
-      />
-      <TouchableOpacity
-        onPress={handleSignUp}
-        style={styles.loginButton}
-        color="dodgerblue"
-      >
-        <Text style={styles.loginButtonText}>Sign Up</Text>
-      </TouchableOpacity>
-      <Text>{error}</Text>
-    </View>
-    </Screen>
+        <View style={styles.container}>
+          <Image
+            width="50"
+            style={styles.logo}
+            source={require("../../assets/login-logo.png")}
+          ></Image>
+          <LogoText />
+          <TextInput
+            style={[styles.input, styles.margin]}
+            placeholder="E-mail"
+            value={inputEmail}
+            onChangeText={(text) => setInputEmail(text)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={inputPassword}
+            onChangeText={(text) => setInputPassword(text)}
+          />
+          <TouchableOpacity
+            onPress={handleSignUp}
+            style={styles.loginButton}
+            color="dodgerblue"
+          >
+            <Text style={styles.loginButtonText}>Sign Up</Text>
+          </TouchableOpacity>
+          <Text>{error}</Text>
+        </View>
+      </Screen>
   );
 }
 
@@ -101,9 +103,8 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     alignItems: "center",
-    width: "100%",
-    height: "100%",
-    marginTop:50,
+    flex: 1,
+    marginTop: 50,
     backgroundColor: "#fff",
   },
   margin: {
