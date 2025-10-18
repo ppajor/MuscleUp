@@ -18,7 +18,7 @@ import Screen from "../../components/Screen";
 import ChooseCategory from "../../components/ChooseCategory";
 import ChooseExercise from "../../components/ChooseExercise";
 
-import firebase from "firebase";
+import { firebase } from "../../firebase-config";
 
 const categories = [
   {

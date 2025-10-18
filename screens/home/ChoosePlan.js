@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import Screen from "../../components/Screen";
-import firebase from "firebase";
+import { firebase } from "../../firebase-config";
 import Plans from "../../components/Plans";
 
 function ChoosePlan(props) {

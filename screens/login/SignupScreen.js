@@ -9,7 +9,7 @@ import {
   BackHandler,
   KeyboardAvoidingView,
 } from "react-native";
-import firebase from "firebase";
+import { firebase } from "../../firebase-config";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import LogoText from "../../components/LogoText";
