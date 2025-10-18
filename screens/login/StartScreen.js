@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 import { Link } from "react-router-native";
-import firebase from "firebase";
+import { firebase } from "../../firebase-config";
 
 import Screen from "../../components/Screen";
 import LogoText from "../../components/LogoText";
@@ -17,7 +17,7 @@ const WelcomePage = (props) => {
     });
   }, []);
 
-  handleAnonymousSignIn = () => {
+  const handleAnonymousSignIn = () => {
     firebase
       .auth()
       .signInAnonymously()

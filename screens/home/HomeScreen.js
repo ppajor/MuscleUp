@@ -9,7 +9,7 @@ import {
   FlatList,
 } from "react-native";
 
-import firebase from "firebase";
+import { firebase } from "../../firebase-config";
 import Screen from "../../components/Screen";
 import Navbar from "../../components/Navbar";
 import LastTrainingRow from "../../components/LastTrainingRow";

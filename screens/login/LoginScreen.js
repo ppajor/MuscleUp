@@ -8,7 +8,7 @@ import {
   Text,
   BackHandler,
 } from "react-native";
-import firebase from "firebase";
+import { firebase } from "../../firebase-config";
 import LogoText from "../../components/LogoText";
 import Screen from "../../components/Screen";
 

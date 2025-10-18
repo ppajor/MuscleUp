@@ -1,10 +1,5 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Route, Switch, MemoryRouter } from "react-router-native"; //dzieki memoryrouter mozna uzywać historii w Child componentach, na normalnym routerze historia dziala jedynie w parent componentach
-
-import { firebaseConfig } from "./firebase-config";
-import firebase from "firebase";
+import { MemoryRouter, Route, Switch } from "react-router-native"; //dzieki memoryrouter mozna uzywać historii w Child componentach, na normalnym routerze historia dziala jedynie w parent componentach
 
 import StartScreen from "./screens/login/StartScreen.js";
 import LoginScreen from "./screens/login/LoginScreen.js";
@@ -14,10 +9,6 @@ import AddPlan from "./screens/home/AddPlan";
 import ChoosePlan from "./screens/home/ChoosePlan";
 import StartTraining from "./screens/home/StartTraining";
 import ProfileScreen from "./screens/profile/ProfileScreen";
-import Navbar from "./components/Navbar";
-
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig); //musimy sprawdzic czy aplikacja zostala juz zainicjowana czy nie, zeby za kazdym razem nie inicjowac apki
-
 export default function App() {
   return (
     <MemoryRouter>

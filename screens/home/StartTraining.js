@@ -11,7 +11,7 @@ import {
 import Timer from "../../components/Timer";
 import Screen from "../../components/Screen";
 import TrainingExercise from "./TrainingExercise";
-import firebase from "firebase";
+import { firebase } from "../../firebase-config";
 
 function StartTraining(props) {
   const [data, setData] = useState({});
